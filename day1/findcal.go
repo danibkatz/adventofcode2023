@@ -20,14 +20,21 @@ func isNumber(char byte) bool {
 //function to identify whole word numbers
 
 func findNumberWord(word string) {
-	ind := 0
+	ind1 := 0
+	ind2 := 0
 	for i, number := range numberWords {
-		ind = strings.Index(word, number)
-		if ind == -1 {
+		ind1 = strings.Index(word, number)
+		ind2 = strings.LastIndex(word, number)
+		if ind1 == -1 && ind2 == -1 {
 			continue
 		}
 		// fmt.Println(word, "  ", "Found", number, "at index", ind, "as", i+1)
-		mapWords[ind] = i + 1
+		if ind1 != -1 {
+			mapWords[ind1] = i + 1
+		}
+		if ind2 != -1 {
+			mapWords[ind2] = i + 1
+		}
 	}
 }
 
@@ -49,12 +56,13 @@ func sort_map(m map[int]int) {
 		keys = append(keys, k)
 	}
 	sort.Ints(keys)
-	for _, k := range keys {
-		fmt.Println(k, ":", m[k])
-	}
+	// for _, k := range keys {
+	// 	fmt.Println(k, ":", m[k])
+	// }
 }
 func main() {
 	sum := 0
+	count := 0
 	// read file input
 	file, err := os.Open("input.txt")
 	if err != nil {
@@ -68,17 +76,12 @@ func main() {
 	for scanner.Scan() {
 		line := scanner.Text()
 		// Process each line of the file here
+		fmt.Println("Start fesh ", mapWords)
 
-		fmt.Println("Working on line: ", line)
 		// find words and numbers
 		findNumberWord(line)
 		findNumber(line)
 
-		if len(mapWords) == 1 {
-			fmt.Println("Adding ", mapWords[0]*10+mapWords[0])
-			sum = sum + mapWords[0]*10 + mapWords[0]
-			continue
-		}
 		sort_map(mapWords)
 		maxKey := 0
 		minKey := 1000
@@ -90,9 +93,12 @@ func main() {
 				minKey = k
 			}
 		}
-		fmt.Println("First word: ", mapWords[minKey], " Last word: ", mapWords[maxKey])
-		fmt.Println("Adding ", mapWords[minKey]*10+mapWords[maxKey])
+		// fmt.Println("First word: ", mapWords[minKey], " Last word: ", mapWords[maxKey])
+		// fmt.Println("Adding ", mapWords[minKey]*10+mapWords[maxKey])
+		fmt.Println("Working on line: ", line, "count: ", count, " Adding ", mapWords[minKey]*10+mapWords[maxKey], "With map ", mapWords)
 		sum = sum + mapWords[minKey]*10 + mapWords[maxKey]
+		fmt.Println(sum)
+		count++
 
 		// clear the map every time
 		for k := range mapWords {
@@ -102,6 +108,8 @@ func main() {
 	}
 
 	fmt.Println(sum)
+	fmt.Println(count)
+
 	if err := scanner.Err(); err != nil {
 		fmt.Println("Error reading file:", err)
 	}
