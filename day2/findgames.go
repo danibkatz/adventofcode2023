@@ -17,8 +17,10 @@ func isNumber(char byte) bool {
 func main() {
 	sum := 0
 	var num int
-	var full_num int
-	canInclude := true
+
+	maxRed := 1
+	maxGreen := 1
+	maxBlue := 1
 	// count := 0
 	// read file input
 	file, err := os.Open("input.txt")
@@ -36,7 +38,6 @@ func main() {
 
 		//split line into map
 		parts := strings.Split(line, ":")
-		gameNum := strings.TrimSpace(parts[0])
 		games := strings.Split(parts[1], ";")
 		// fmt.Println(gameNum)
 		// fmt.Println(games)
@@ -51,43 +52,40 @@ func main() {
 				} else {
 					num = int(piece[1] - 48)
 				}
-				fmt.Println(num)
+				fmt.Println("num: ", num)
 				if strings.Index(piece, "red") != -1 {
 					// fmt.Println("red")
-					if num > arrayBag[0] {
-						canInclude = false
+					if num > maxRed {
+						maxRed = num
 					}
 
 				}
 				if strings.Index(piece, "green") != -1 {
 					// fmt.Println("green")
-					if num > arrayBag[1] {
-						canInclude = false
+					if num > maxGreen {
+						maxGreen = num
 					}
 				}
 				if strings.Index(piece, "blue") != -1 {
 					// fmt.Println("blue")
-					if num > arrayBag[2] {
-						canInclude = false
+					if num > maxBlue {
+						maxBlue = num
 					}
 				}
 			}
 
 		}
 
-		if canInclude == true {
-			game_num := strings.Split(gameNum, " ")
-			fmt.Println("len: ", len(game_num[1]))
-			if len(game_num[1]) > 1 {
-				full_num = int(game_num[1][0]-48)*10 + int(game_num[1][1]-48)
-			} else {
-				full_num = int(game_num[1][0] - 48)
-			}
-			sum += full_num
-			fmt.Println("which ", full_num)
-			// sum += game_num
-		}
-		canInclude = true
+		fmt.Println("MaxRed: ", maxRed, " MaxGreen: ", maxGreen, " MaxBlue:", maxBlue)
+		minPower := maxRed * maxGreen * maxBlue
+		sum += minPower
+		fmt.Println("which ", sum)
+		// sum += game_num
+
+		//reset
+		maxRed = 1
+		maxGreen = 1
+		maxBlue = 1
 
 		// Continue with the rest of your code
 	}
